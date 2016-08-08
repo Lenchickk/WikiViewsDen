@@ -42,16 +42,32 @@ namespace WikiPageViewsParser
 
                     helper = file.Split(delimiterLast);
                     shortname = helper[helper.Length - 1];
+                    String outstringLong = file.Substring(0, file.Length - shortname.Length);
 
                     if (!Downloader.downloaded.Contains(shortname)) continue;
                     if (startedUnwrap.Contains(shortname)) continue;
 
                     startedUnwrap.Add(shortname);
                     string outname = shortname + ".out";
+                    outstringLong+=outname;
 
                     Execute("gzip -dc  " + shortname + "  >  " + outname + " ");
+
                     System.IO.File.Delete(file);
-                    unwrapped.Add(outname);
+                    /*
+                    while (true)
+                    {
+                        try
+                        {
+                            System.IO.File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Trying to delete " + file);
+                        }
+                    }*/
+
+                    unwrapped.Add(outstringLong);
                     Downloader.compressedFiles--;
                     decompressedFiles++;
 
@@ -63,7 +79,7 @@ namespace WikiPageViewsParser
 
             }
 
-            Console.WriteLine(myNumber+ " Unwrapper ended");
+            Console.WriteLine(myNumber+ " unwrapper ended");
 
         }
 

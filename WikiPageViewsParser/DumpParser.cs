@@ -27,23 +27,33 @@ namespace WikiPageViewsParser
         static public Int64 totalChangestoday = 0;
         static public Int64 totalBytesInChangedFilesToday = 0;
         public static Dictionary<String, List<Int64>> interestPageslocal = PagesLocalLoad();
+        static public Int64 totalViewed = 0;
 
         static public void DailyResultToFile(DateTime dt)
         {
-            String str = dt.ToString("yyyy-MM-dd")+"\t";
+            String str;
             StreamWriter sw = new StreamWriter(Common.outputFile, true);
-            foreach (String key in interestPageslocal.Keys)
+            /*foreach (String key in interestPageslocal.Keys)
             {
                 str += key + "\t" + interestPageslocal[key][0].ToString() +  "\t" + interestPageslocal[key][1].ToString();
                 sw.WriteLine(str);
-            }
-            str = dt.ToString("yyyy-MM-dd") + "\tother\t" + totalChangestoday.ToString() + "\t" + totalBytesInChangedFilesToday.ToString();
+            }*/
+            str= dt.ToString("yyyy-MM-dd") + "\t1\t" + interestViewsToday.ToString() + "\t" + totalBytesToday.ToString() + "\t" 
+                + interestPageslocal.Count + "\t" + (interestViewsToday /( (double)interestPageslocal.Count)).ToString();
+            sw.WriteLine(str);
+            str= dt.ToString("yyyy-MM-dd") + "\t2\t" + totalChangestoday.ToString() + "\t" 
+                + totalBytesInChangedFilesToday.ToString()+"\t" + totalViewed +"\t" + (totalChangestoday/(double)totalViewed).ToString();
             sw.WriteLine(str);
             sw.Close();
+           
+
         }
 
         public static void DoParsing(DateTime start)
         {
+
+            StreamWriter sw = new StreamWriter(Common.outputFile,false);
+            sw.Close();
             String[] buf;
             String shortname;
             Int32 buffersize = 40000;//4095 * 256;// *16;
@@ -57,27 +67,37 @@ namespace WikiPageViewsParser
             String targetDomain = "ru";
             byte previousHour = 0;
             byte currentHour = 0;
+            byte countperDay = 0;
 
             while (Common.links.Count>0)
             {
                 foreach (String file in viewsFiles)
                 {
+                startLoop:;
+                    if (!DecompressionTrickery.unwrapped.Contains(file)) continue;
+
                     buf = file.Split(delimitersmall);
                     shortname = buf[buf.Length - 1];
 
                     buf = file.Split(delimiterLast);
                     currentDate = DateTime.ParseExact(buf[1], "yyyyMMdd", null);
 
-                    currentHour = Byte.Parse(buf[2].Substring(0, 2));
-                    if (currentHour < previousHour)
+                    if (Common.interestPages.Contains("%D0%9A%D1%83%D0%B1%D0%BE%D0%BA_%D0%A3%D0%95%D0%A4%D0%90"))
+                    {
+
+                    }
+                    //currentHour = Byte.Parse(buf[2].Substring(0, 2));
+                    if (previousDate != currentDate && countperDay != Common.countperDay[previousDate]) continue;
+                    if (previousDate != currentDate && countperDay==Common.countperDay[previousDate])
                     {
                         DailyResultToFile(previousDate);
                         NullLocalPages();
-                        previousHour = currentHour;
+                       // previousHour = currentHour;
                         previousDate = new DateTime(currentDate.Ticks);
+                        countperDay = 0;
                     }
 
-                    
+                    countperDay++;
                     String tail = "";
                     int a;
                     String[] items;
@@ -93,13 +113,15 @@ namespace WikiPageViewsParser
                     {
                         a = fs.Read(longbuffer, 0, n);
                         items = System.Text.Encoding.UTF8.GetString(longbuffer).ToString().Split('\n');
+                        if (items.Length == 1) goto startLoop;
                     }  while ((items[items.Length-2].Split(' '))[0] != targetDomain);
 
-                    for (int i=items.Length-1;i>0; i--)
+                    tail = items[items.Length - 1];
+                    for (int i=items.Length-2;i>0; i--)
                     {
                         if ((items[i].Split(' '))[0] == targetDomain)
                         {
-                            tail = items[i] + tail;
+                            tail = items[i] + "\n"+tail;
                             continue;
                         }
                         break;
@@ -111,38 +133,50 @@ namespace WikiPageViewsParser
                     do
                     {
                         String rawstring = System.Text.Encoding.UTF8.GetString(longbuffer).ToString();
-                        rawstring = tail+ rawstring.Substring(0, rawstring.Length - items[items.Length - 1].Length);
+                        rawstring = tail+ rawstring;
                         tail = items[items.Length - 1];
                         String[] records = rawstring.Split('\n');
-                        foreach (String rec in records)
+                        for (int i=0; i<records.Length-1;i++)
                         {
-                            if (AnalyzeWikiString(rec) > 0) goto endFile;
+                            String[] check = records[i].Split(' ');
+                            if (AnalyzeWikiString(records[i]) > 0) goto endFile;
                         }
+                        longbuffer = new byte[n];
                         a = fs.Read(longbuffer, 0, n);
-                        items = rawstring.Split('\n');
+                        items = System.Text.Encoding.UTF8.GetString(longbuffer).ToString().Split('\n');
 
-                    } while ((items[0].Split(' '))[0] == targetDomain);
+                    } while ((items[1].Split(' '))[0] == targetDomain);
 
-                    //russian tails
+                //russian tails
                 endFile:;
-
+                    fs.Close();
+                    File.Delete(file);
+                    DecompressionTrickery.decompressedFiles--;
                 }
+
+                viewsFiles = Directory.GetFiles(Common.pile, "*.out");
             }
 
 
         }
 
+        public static Int64 interestViewsToday = 0;
+        public static Int64 totalBytesToday = 0;
         static public byte AnalyzeWikiString(String s)
         {
             String[] items = s.Split(' ');
+            if (items.Length < 4) return 0;
             if (items[0] != "ru") return 1;
             if (Common.interestPages.Contains(items[1]))
             {
                 interestPageslocal[items[1]][0] += Int64.Parse(items[2]);
                 interestPageslocal[items[1]][1] += Int64.Parse(items[3]);
-                return 0;
-            }  
 
+                interestViewsToday+= Int64.Parse(items[2]);
+                totalBytesToday += Int64.Parse(items[3]);
+                return 0;
+            }
+            totalViewed++;
             totalChangestoday+= Int64.Parse(items[2]);
             totalBytesInChangedFilesToday+= Int64.Parse(items[3]);
             return 0;
@@ -154,6 +188,8 @@ namespace WikiPageViewsParser
             {
                 l[0] = l[1] = 0;
             }
+            totalViewed = 0;
+            totalBytesInChangedFilesToday = totalBytesToday = totalChangestoday = interestViewsToday=  0;
         }
         static Dictionary<String, List<Int64>> PagesLocalLoad()
         {

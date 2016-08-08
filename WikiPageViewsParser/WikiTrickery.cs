@@ -13,7 +13,7 @@ namespace WikiPageViewsParser
         {
             List<String> buf = new List<string>();
             List<String> links = new List<String>();
-               DateTime cursor = new DateTime(start.Ticks);
+            DateTime cursor = new DateTime(start.Ticks);
             String link;
             
             while (cursor.Ticks<=end.Ticks)
@@ -23,9 +23,14 @@ namespace WikiPageViewsParser
                 link += cursor.Month.ToString() + "/";
                 buf.Add(link);
                 cursor = PlusMonth(cursor);
+                
             }
 
+            for (DateTime dt = start; dt.Ticks <= new DateTime(end.Year,end.Month, DateTime.DaysInMonth(end.Year,end.Month)).Ticks; dt = new DateTime(dt.Ticks + TimeSpan.TicksPerDay))
+                Common.countperDay.Add(dt, 0);
+
             WebClient w = new WebClient();
+            cursor  = new DateTime(start.Ticks);
             foreach (String page in buf)
             {
                 String s = w.DownloadString(page);
@@ -34,8 +39,10 @@ namespace WikiPageViewsParser
                 {
                     if (l.Href[0] != 'p') continue;
                     links.Add(page + l.Href);
+                    Common.countperDay[DateTime.ParseExact(l.Href.Split('-')[1], "yyyyMMdd", null)]++;
+                   
                 }
-
+                
             }
             return links;
         }

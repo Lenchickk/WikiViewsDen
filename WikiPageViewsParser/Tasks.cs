@@ -18,14 +18,17 @@ namespace WikiPageViewsParser
             Common.links = WikiTrickery.GetPageRange(new DateTime(2012, 1, 1), new DateTime(2016, 5, 1));
             Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
 
-            MultiThreadTrickery.StartThreads(1);
+            
+            
+ 
+            MultiThreadTrickery.StartThreads(5);
 
-            while (Downloader.downloaded.Count<1)
+            while (Downloader.downloaded.Count<2)
             {
                 ;
             }
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 3; i++)
             {
                 DecompressionTrickery unwrapper = new DecompressionTrickery();
                 System.Threading.Thread unwrapStream = new System.Threading.Thread(unwrapper.DecompressionStream);
@@ -36,9 +39,15 @@ namespace WikiPageViewsParser
             {
                 ;
             }
-
+            
             DumpParser.DoParsing(start);
 
+        }
+
+        public static void PrepareData()
+        {
+            Common.links = WikiTrickery.GetPageRange(new DateTime(2012, 1, 1), new DateTime(2016, 5, 1));
+            Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
         }
  
     }

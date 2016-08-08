@@ -10,9 +10,8 @@ namespace WikiPageViewsParser
     {
         static void Main(string[] args)
         {
-            DateTime dt = new DateTime(1999, 1, 8);
-            String str = dt.ToString("yyyy-MM-dd");
-            //Tasks.DoExtraction(new DateTime(2012, 1, 1), new DateTime(2016, 5, 1));
+            String str = WikiDigger.QuotedPrintable.EncodeQuotedPrintable("Крым");
+           Tasks.DoExtraction(new DateTime(2012, 1, 1), new DateTime(2016, 5, 1));
         }
     }
 }

@@ -18,6 +18,7 @@ namespace WikiPageViewsParser
                 Thread downloadThread = new Thread(downloader.DownloadStream2Update);
                 downloadThread.Start();
                 Common.downloaderThreads.Add(downloadThread);
+                System.Threading.Thread.Sleep(10000);
             }
         }
     }

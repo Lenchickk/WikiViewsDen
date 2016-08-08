@@ -13,11 +13,12 @@ namespace WikiPageViewsParser
         public static volatile List<List<String>> extractedData = new List<List<string>>();
         public static volatile HashSet<String> interestPages = new HashSet<string>();
         public static volatile List<String> links = new List<String>();
+        public static volatile Dictionary<DateTime, byte> countperDay = new Dictionary<DateTime, byte>();
         public static String getPagesSQL = @"select distinct title from pages where _key<>'Славянск' and _key<>'Минск' and _key<>'Белорусси' and _key<>'Аваков' and _key<>'Аксенов' and nc=14;";
         public static volatile List<Thread> downloaderThreads = new List<Thread>();
         public static volatile List<Thread> unwrapThreads = new List<Thread>();
-        public static volatile String pile = @"D:\wp\code\WikiPageViewsParser\WikiPageViewsParser\bin\Debug\";
-        public static volatile String outputFile = @"D:\wp\code\WikiPageViewsParser\WikiPageViewsParser\bin\pageViews.txt";
+        public static volatile String pile = @"C:\Users\Administrator\Documents\GitHub\WikiViewsDen\WikiPageViewsParser\bin\Debug\";
+        public static volatile String outputFile = @"C:\Users\Administrator\Documents\GitHub\WikiViewsDen\WikiPageViewsParser\bin\pageViews.txt";
 
         static public Boolean pendingCondition()
         {

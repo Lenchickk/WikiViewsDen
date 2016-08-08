@@ -15,7 +15,7 @@ namespace WikiPageViewsParser
     {
         public static void DoExtraction(DateTime start, DateTime end)
         {
-            Common.links = WikiTrickery.GetPageRange(new DateTime(2012, 1, 1), new DateTime(2016, 5, 1));
+            Common.links = WikiTrickery.GetPageRange(start, end);
             Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
 
             

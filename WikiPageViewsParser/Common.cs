@@ -19,6 +19,7 @@ namespace WikiPageViewsParser
         public static volatile List<Thread> unwrapThreads = new List<Thread>();
         public static volatile String pile = @"C:\Users\Administrator\Documents\GitHub\WikiViewsDen\WikiPageViewsParser\bin\Debug\";
         public static volatile String outputFile = @"C:\Users\Administrator\Documents\GitHub\WikiViewsDen\WikiPageViewsParser\bin\pageViews.txt";
+        public static volatile String outputFile_details = @"C:\Users\Administrator\Documents\GitHub\WikiViewsDen\WikiPageViewsParser\bin\detailedpageViews.txt";
 
         static public Boolean pendingCondition()
         {

@@ -31,13 +31,16 @@ namespace WikiPageViewsParser
 
         static public void DailyResultToFile(DateTime dt)
         {
-            String str;
+            String str="";
             StreamWriter sw = new StreamWriter(Common.outputFile, true);
-            /*foreach (String key in interestPageslocal.Keys)
+            StreamWriter sw2 = new StreamWriter(Common.outputFile_details, true);
+                 
+            foreach (String key in interestPageslocal.Keys)
             {
                 str += key + "\t" + interestPageslocal[key][0].ToString() +  "\t" + interestPageslocal[key][1].ToString();
-                sw.WriteLine(str);
-            }*/
+                sw2.WriteLine(str);
+            }
+            sw2.Close();
             str= dt.ToString("yyyy-MM-dd") + "\t1\t" + interestViewsToday.ToString() + "\t" + totalBytesToday.ToString() + "\t" 
                 + interestPageslocal.Count + "\t" + (interestViewsToday /( (double)interestPageslocal.Count)).ToString();
             sw.WriteLine(str);
@@ -82,10 +85,7 @@ namespace WikiPageViewsParser
                     buf = file.Split(delimiterLast);
                     currentDate = DateTime.ParseExact(buf[1], "yyyyMMdd", null);
 
-                    if (Common.interestPages.Contains("%D0%9A%D1%83%D0%B1%D0%BE%D0%BA_%D0%A3%D0%95%D0%A4%D0%90"))
-                    {
-
-                    }
+   
                     //currentHour = Byte.Parse(buf[2].Substring(0, 2));
                     if (previousDate != currentDate && countperDay != Common.countperDay[previousDate]) continue;
                     if (previousDate != currentDate && countperDay==Common.countperDay[previousDate])

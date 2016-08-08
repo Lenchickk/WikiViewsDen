@@ -31,11 +31,11 @@ namespace WikiPageViewsParser
 
             while ((task = GetTask())!="done")
             {
-                while (Common.pendingCondition())
+                /*while (Common.pendingCondition())
                 {
                     ;
                 }
-
+                */
                 String[] buff = task.Split('/');
                 String myname = buff[buff.Length - 1];
                 String[] check = myname.Split(delimiterChars);

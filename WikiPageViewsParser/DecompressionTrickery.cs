@@ -35,11 +35,11 @@ namespace WikiPageViewsParser
             {
                 foreach (String file in viewsFiles)
                 {
-                    while (Common.pendingCondition())
+                   /* while (Common.pendingCondition())
                     {
                         ;
                     }
-
+                    */
                     helper = file.Split(delimiterLast);
                     shortname = helper[helper.Length - 1];
                     String outstringLong = file.Substring(0, file.Length - shortname.Length);
@@ -53,7 +53,15 @@ namespace WikiPageViewsParser
 
                     Execute("gzip -dc  " + shortname + "  >  " + outname + " ");
 
-                    System.IO.File.Delete(file);
+                    while (true)
+                    {
+                        try { System.IO.File.Delete(file); goto exit; }
+                        catch(Exception ex)
+                        {
+
+                        }
+                    }
+                exit:;
                     /*
                     while (true)
                     {

@@ -37,14 +37,15 @@ namespace WikiPageViewsParser
                  
             foreach (String key in interestPageslocal.Keys)
             {
-                str += key + "\t" + interestPageslocal[key][0].ToString() +  "\t" + interestPageslocal[key][1].ToString();
+                str = dt.ToString("yyyy-MM-dd") + "\t" + key + "\t" + interestPageslocal[key][0].ToString() +  "\t" + interestPageslocal[key][1].ToString();
                 sw2.WriteLine(str);
+                
             }
             sw2.Close();
             str= dt.ToString("yyyy-MM-dd") + "\t1\t" + interestViewsToday.ToString() + "\t" + totalBytesToday.ToString() + "\t" 
                 + interestPageslocal.Count + "\t" + (interestViewsToday /( (double)interestPageslocal.Count)).ToString();
             sw.WriteLine(str);
-            str= dt.ToString("yyyy-MM-dd") + "\t2\t" + totalChangestoday.ToString() + "\t" 
+            str= dt.ToString("yyyy-MM-dd") + "\t0\t" + totalChangestoday.ToString() + "\t" 
                 + totalBytesInChangedFilesToday.ToString()+"\t" + totalViewed +"\t" + (totalChangestoday/(double)totalViewed).ToString();
             sw.WriteLine(str);
             sw.Close();

@@ -103,8 +103,17 @@ namespace WikiPageViewsParser
                     int a;
                     String[] items;
                     Int32 n = 100000;
-
-                    FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+                    FileStream fs = null;
+                    while (true)
+                    {
+                        try
+                        {
+                            fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+                            break;
+                        }
+                        catch(Exception ex)
+                       {; }
+                    }
                    
                     byte[] longbuffer = new byte[n];
                    

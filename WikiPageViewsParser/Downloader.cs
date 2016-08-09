@@ -69,10 +69,56 @@ namespace WikiPageViewsParser
             Console.WriteLine("I am " + mynumber.ToString() + "and I am done.");
         }
 
+        public static volatile Int32 totalcount = 0;
+        public static void DownloadStream2UpdateNoTask(String task)
+        {
+            WebClient w = new WebClient();
+            //Int16 counter = -1;
+
+            while (task  != "done")
+            {
+                /*while (Common.pendingCondition())
+                {
+                    ;
+                }
+                */
+                String[] buff = task.Split('/');
+                String myname = buff[buff.Length - 1];
+                String[] check = myname.Split(delimiterChars);
+
+                String to = Common.pile + myname;
+
+                if (startedDownload.Contains(myname)) continue;
+
+                startedDownload.Add(myname);
+
+                rawFiles++;
+                totalcount++;
+                Console.WriteLine(totalcount.ToString() + " I am downloading " + myname);
+
+            trymore:
+                try
+                {
+                    w.DownloadFile(task, to);
+                }
+                catch (System.Net.WebException ex)
+                {
+                    System.Threading.Thread.Sleep(10000);
+                    goto trymore;
+                }
+
+                downloaded.Add(myname);
+                rawFiles--;
+                compressedFiles++;
+                return;
+            }
+
+            //Console.WriteLine("I am " + mynumber.ToString() + "and I am done.");
+        }
 
 
 
-        string GetTask()
+        public static string GetTask()
         {
             if (Common.links.Count == 0) return "done";
             String myTask = Common.links[0];

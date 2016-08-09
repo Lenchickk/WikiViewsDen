@@ -13,15 +13,45 @@ namespace WikiPageViewsParser
 {
     public static class Tasks
     {
+        public static DateTime s;
+        public static DateTime e;
+
         public static void DoExtraction(DateTime start, DateTime end)
         {
-            Common.links = WikiTrickery.GetPageRange(start, end);
-            Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
+            s = start;
+            e = end;
 
-            
-            
- 
-            MultiThreadTrickery.StartThreads(5);
+            System.Threading.Thread mainThread = new System.Threading.Thread(FileKitchen);
+            mainThread.Start();
+
+            Common.links = WikiTrickery.GetPageRange(s, e);
+
+            while (Common.links != null)
+            {
+                List<String> thisDay = new List<string>();
+                DateTime today = s;
+
+                for (int i=0; i<Common.countperDay[s]; i++)
+                {
+                    thisDay.Add(Downloader.GetTask());
+                }
+                Console.WriteLine(s.ToLongDateString());
+                Console.WriteLine();
+                Parallel.ForEach<string>(
+                    thisDay,
+                    new ParallelOptions { MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.999) * 1.0)) },
+                         item => Downloader.DownloadStream2UpdateNoTask(item)
+                                  );
+                today = new DateTime(s.Ticks + TimeSpan.TicksPerDay);
+            }
+            /* Parallel.foreach (var item in Common.interestPages)
+             {
+                 ;
+             }*/
+
+            /*
+
+            MultiThreadTrickery.StartThreads(3);
 
             while (Downloader.downloaded.Count<2)
             {
@@ -40,8 +70,33 @@ namespace WikiPageViewsParser
                 ;
             }
             
-            DumpParser.DoParsing(start);
+            DumpParser.DoParsing(start);*/
 
+        }
+
+        public static void FileKitchen()
+        {
+            
+            Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
+
+            while (Downloader.downloaded.Count < 2)
+            {
+                ;
+            }
+
+            for (int i = 0; i < 1; i++)
+            {
+                DecompressionTrickery unwrapper = new DecompressionTrickery();
+                System.Threading.Thread unwrapStream = new System.Threading.Thread(unwrapper.DecompressionStream);
+                unwrapStream.Start();
+            }
+
+            while (DecompressionTrickery.unwrapped.Count < 2)
+            {
+                ;
+            }
+
+            DumpParser.DoParsing(s);
         }
 
         public static void PrepareData()

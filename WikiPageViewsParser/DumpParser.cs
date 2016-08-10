@@ -56,14 +56,14 @@ namespace WikiPageViewsParser
         public static void DoParsing(DateTime start)
         {
 
-            StreamWriter sw = new StreamWriter(Common.outputFile,false);
+            StreamWriter sw = new StreamWriter(Common.outputFile,true);
             sw.Close();
             String[] buf;
             String shortname;
             Int32 buffersize = 40000;//4095 * 256;// *16;
             char[] buffer = new char[buffersize];
             DateTime currentDate;
-            DateTime previousDate = new DateTime(start.Ticks);
+            DateTime previousDate = start;
             char[] delimiterLast = { '-' };
             char[] delimitersmall = { '\\' };
             String[] viewsFiles = Directory.GetFiles(Common.pile, "*.out");
@@ -72,7 +72,9 @@ namespace WikiPageViewsParser
             byte previousHour = 0;
             byte currentHour = 0;
             byte countperDay = 0;
-
+            ///
+            start = new DateTime(2013, 1, 31);
+            ///
             while (Common.links.Count>0)
             {
                 foreach (String file in viewsFiles)
@@ -86,19 +88,21 @@ namespace WikiPageViewsParser
                     buf = file.Split(delimiterLast);
                     currentDate = DateTime.ParseExact(buf[1], "yyyyMMdd", null);
 
-   
-                    //currentHour = Byte.Parse(buf[2].Substring(0, 2));
+
                     if (previousDate != currentDate && countperDay != Common.countperDay[previousDate]) continue;
                     if (previousDate != currentDate && countperDay==Common.countperDay[previousDate])
+                       
+                   
                     {
+                    
                         DailyResultToFile(previousDate);
                         NullLocalPages();
-                       // previousHour = currentHour;
                         previousDate = new DateTime(currentDate.Ticks);
                         countperDay = 0;
                     }
 
-                    countperDay++;
+                   countperDay++;
+                  
                     String tail = "";
                     int a;
                     String[] items;
@@ -163,7 +167,7 @@ namespace WikiPageViewsParser
                     File.Delete(file);
                     DecompressionTrickery.decompressedFiles--;
                 }
-
+            again:;
                 viewsFiles = Directory.GetFiles(Common.pile, "*.out");
             }
 
@@ -187,8 +191,13 @@ namespace WikiPageViewsParser
                 return 0;
             }
             totalViewed++;
-            totalChangestoday+= Int64.Parse(items[2]);
-            totalBytesInChangedFilesToday+= Int64.Parse(items[3]);
+            try
+            {
+                totalChangestoday += Int64.Parse(items[2]);
+                totalBytesInChangedFilesToday += Int64.Parse(items[3]);
+            }
+            catch(Exception ex)
+            {; }
             return 0;
         }
 

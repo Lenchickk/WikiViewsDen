@@ -25,24 +25,32 @@ namespace WikiPageViewsParser
             mainThread.Start();
 
             Common.links = WikiTrickery.GetPageRange(s, e);
+            DateTime today = s;
 
+          
             while (Common.links != null)
             {
+                //s = new DateTime(2013, 1, 31);
                 List<String> thisDay = new List<string>();
-                DateTime today = s;
 
-                for (int i=0; i<Common.countperDay[s]; i++)
+                Downloader.GetTask();
+                Downloader.GetTask();
+                //if (s.Ticks < new DateTime(2013, 1, 31).Ticks) continue;
+
+                for (int i=0; i<Common.countperDay[today]; i++)
                 {
                     thisDay.Add(Downloader.GetTask());
                 }
-                Console.WriteLine(s.ToLongDateString());
+
+                Console.WriteLine(today.ToLongDateString());
                 Console.WriteLine();
                 Parallel.ForEach<string>(
                     thisDay,
                     new ParallelOptions { MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.999) * 1.0)) },
                          item => Downloader.DownloadStream2UpdateNoTask(item)
                                   );
-                today = new DateTime(s.Ticks + TimeSpan.TicksPerDay);
+                today = new DateTime(today.Ticks + TimeSpan.TicksPerDay);
+                
             }
             /* Parallel.foreach (var item in Common.interestPages)
              {

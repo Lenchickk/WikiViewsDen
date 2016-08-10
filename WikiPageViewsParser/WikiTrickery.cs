@@ -47,6 +47,55 @@ namespace WikiPageViewsParser
             return links;
         }
 
+
+        public static List<String> GetPageRangeExact(DateTime start, DateTime end)
+        {
+            List<String> buf = new List<string>();
+            List<String> links = new List<String>();
+            DateTime cursorExact = new DateTime(start.Ticks);
+            DateTime cursor = new DateTime(start.Year,start.Month,1);
+            String link;
+
+            while (cursor.Ticks <= end.Ticks)
+            {
+                link = Common.baseLink + cursor.Year.ToString() + "/" + cursor.Year.ToString() + "-";
+                if (cursor.Month < 10) link += "0";
+                link += cursor.Month.ToString() + "/";
+                buf.Add(link);
+                cursor = PlusMonth(cursor);
+
+            }
+
+            for (DateTime dt = start; dt.Ticks <= new DateTime(end.Year, end.Month, end.Day).Ticks; dt = new DateTime(dt.Ticks + TimeSpan.TicksPerDay))
+            {
+                Common.countperDay.Add(dt, 0);
+            }
+
+            WebClient w = new WebClient();
+            cursor = new DateTime(start.Ticks);
+            foreach (String page in buf)
+            {
+                String s = w.DownloadString(page);
+
+                foreach (LinkItem l in LinkFinder.Find(s))
+                {
+                    if (l.Href[0] != 'p') continue;
+                    DateTime today = DateTime.ParseExact(l.Href.Split('-')[1], "yyyyMMdd", null);
+                    if (today < start) continue;
+                    if (today > end) break; 
+                    links.Add(page + l.Href);
+                    Common.countperDay[today]++;
+
+                }
+
+            }
+            return links;
+        }
+
+
+
+
+
         static DateTime PlusMonth(DateTime dt)
         {
             Int32 month = dt.Month;

@@ -24,19 +24,15 @@ namespace WikiPageViewsParser
             System.Threading.Thread mainThread = new System.Threading.Thread(FileKitchen);
             mainThread.Start();
 
-            Common.links = WikiTrickery.GetPageRange(s, e);
+            Common.links = WikiTrickery.GetPageRangeExact(s, e);
             DateTime today = s;
 
           
             while (Common.links != null)
             {
-                //s = new DateTime(2013, 1, 31);
+               
                 List<String> thisDay = new List<string>();
-
-                Downloader.GetTask();
-                Downloader.GetTask();
-                //if (s.Ticks < new DateTime(2013, 1, 31).Ticks) continue;
-
+                         
                 for (int i=0; i<Common.countperDay[today]; i++)
                 {
                     thisDay.Add(Downloader.GetTask());

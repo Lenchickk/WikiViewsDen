@@ -101,17 +101,24 @@ namespace WikiPageViewsParser
                         countperDay = 0;
                     }
 
-                   countperDay++;
+                   
                   
                     String tail = "";
                     int a;
                     String[] items;
                     Int32 n = 100000;
                     FileStream fs = null;
+                    StreamReader sr = null; 
                     while (true)
                     {
                         try
                         {
+                            sr = new StreamReader(file);
+                            if (sr.ReadLine()==null)
+                            {
+                                goto emptyfile;
+                            }
+                           
                             fs = new FileStream(file, FileMode.Open, FileAccess.Read);
                             break;
                         }
@@ -121,7 +128,7 @@ namespace WikiPageViewsParser
                    
                     byte[] longbuffer = new byte[n];
                    
-                    fs.Seek(fs.Length * 3 / 4, 0);
+                    //fs.Seek(fs.Length * 1 / 2, 0);
 
                     do
                     {
@@ -164,6 +171,9 @@ namespace WikiPageViewsParser
                 //russian tails
                 endFile:;
                     fs.Close();
+                emptyfile:;
+                    countperDay++;
+                    sr.Close();
                     File.Delete(file);
                     DecompressionTrickery.decompressedFiles--;
                 }

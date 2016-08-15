@@ -75,7 +75,7 @@ namespace WikiPageViewsParser
             ///
             start = new DateTime(2013, 1, 31);
             ///
-            while (Common.links.Count>0)
+            while (DecompressionTrickery.decompressedFiles>0)
             {
                 foreach (String file in viewsFiles)
                 {

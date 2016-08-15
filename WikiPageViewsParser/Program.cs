@@ -10,7 +10,7 @@ namespace WikiPageViewsParser
     {
         static void Main(string[] args)
         {
-            Tasks.DoExtraction(new DateTime(2013, 8, 5), new DateTime(2014, 5, 31));
+            Tasks.DoExtraction(new DateTime(2014, 12, 25   ), new DateTime(2014, 12, 25));
         }
     }
 }

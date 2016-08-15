@@ -31,7 +31,8 @@ namespace WikiPageViewsParser
 
             Console.WriteLine("Unwrapper started" + myNumber);
 
-            while (Common.links.Count>0)
+            while (Downloader.compressedFiles>0 || Common.links.Count>0)
+        
             {
                 foreach (String file in viewsFiles)
                 {

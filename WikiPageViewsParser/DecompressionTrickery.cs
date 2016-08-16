@@ -52,6 +52,8 @@ namespace WikiPageViewsParser
                     string outname = shortname + ".out";
                     outstringLong+=outname;
 
+                    if (File.Exists(outname)) goto exit;
+
                     Execute("gzip -dc  " + shortname + "  >  " + outname + " ");
 
                     while (true)

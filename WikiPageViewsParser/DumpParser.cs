@@ -136,6 +136,7 @@ namespace WikiPageViewsParser
                         a = fs.Read(longbuffer, 0, n);
                         items = System.Text.Encoding.UTF8.GetString(longbuffer).ToString().Split('\n');
                         if (items.Length == 1) goto startLoop;
+                        if (a == 0) goto endFile;
                     }  while ((items[items.Length-2].Split(' '))[0] != targetDomain);
 
                     tail = items[items.Length - 1];
@@ -181,7 +182,7 @@ namespace WikiPageViewsParser
             again:;
                 viewsFiles = Directory.GetFiles(Common.pile, "*.out");
             }
-
+            DailyResultToFile(previousDate);
 
         }
 

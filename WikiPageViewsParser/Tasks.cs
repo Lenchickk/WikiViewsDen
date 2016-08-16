@@ -32,10 +32,18 @@ namespace WikiPageViewsParser
             {
                
                 List<String> thisDay = new List<string>();
-                         
-                for (int i=0; i<Common.countperDay[today]; i++)
+
+                try
                 {
-                    thisDay.Add(Downloader.GetTask());
+                    for (int i = 0; i < Common.countperDay[today]; i++)
+                    {
+                        thisDay.Add(Downloader.GetTask());
+                    }
+                }
+
+                catch (Exception ex )
+                {
+                    return;
                 }
 
                 Console.WriteLine(today.ToLongDateString());
@@ -83,7 +91,7 @@ namespace WikiPageViewsParser
             
             Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
 
-            while (Downloader.downloaded.Count < 2)
+            while (Downloader.downloaded.Count < 1 && DecompressionTrickery.decompressedFiles<1)
             {
                 ;
             }
@@ -95,7 +103,7 @@ namespace WikiPageViewsParser
                 unwrapStream.Start();
             }
 
-            while (DecompressionTrickery.unwrapped.Count < 2)
+            while (DecompressionTrickery.unwrapped.Count < 1)
             {
                 ;
             }

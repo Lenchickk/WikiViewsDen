@@ -48,7 +48,10 @@ namespace WikiPageViewsParser
 
                 rawFiles++;
 
+               if (System.IO.File.Exists(to) || DecompressedFileIntheFolder(myname) && !downloaded.Contains(myname)) goto alreadyHaveFile;
+
                 Console.WriteLine("I am " + mynumber.ToString() + " and I am downloading " + myname);
+
 
             trymore:
                 try
@@ -60,6 +63,7 @@ namespace WikiPageViewsParser
                     System.Threading.Thread.Sleep(10000);
                     goto trymore;
                 }
+            alreadyHaveFile:;
                       
                 downloaded.Add(myname);
                 rawFiles--;
@@ -67,6 +71,30 @@ namespace WikiPageViewsParser
             }
 
             Console.WriteLine("I am " + mynumber.ToString() + "and I am done.");
+        }
+
+        static bool DecompressedFileIntheFolder(String name)
+        {
+            String[] viewsFiles = System.IO.Directory.GetFiles(Common.pile, "*.out");
+
+            foreach (String file in viewsFiles)
+            {
+                if (file.Contains(name)) return true;
+            }
+
+            return false;
+        }
+
+        static bool CompressedFileIntheFolder(String name)
+        {
+            String[] viewsFiles = System.IO.Directory.GetFiles(Common.pile, "*.gz");
+
+            foreach (String file in viewsFiles)
+            {
+                if (file==name) return true;
+            }
+
+            return false;
         }
 
         public static volatile Int32 totalcount = 0;
@@ -90,10 +118,22 @@ namespace WikiPageViewsParser
 
                 if (startedDownload.Contains(myname)) continue;
 
+                if (CompressedFileIntheFolder(to) && !startedDownload.Contains(myname))
+                    goto alreadyHaveDecompressedFile;
+
+                if (DecompressedFileIntheFolder(myname) && !downloaded.Contains(myname))
+                {
+                    DecompressionTrickery.decompressedFiles++;
+                    DecompressionTrickery.unwrapped.Add(to+".out");
+                    goto alreadyHaveFile2;
+                }
+
+
                 startedDownload.Add(myname);
 
                 rawFiles++;
                 totalcount++;
+
                 Console.WriteLine(totalcount.ToString() + " I am downloading " + myname);
 
             trymore:
@@ -106,10 +146,11 @@ namespace WikiPageViewsParser
                     System.Threading.Thread.Sleep(10000);
                     goto trymore;
                 }
-
-                downloaded.Add(myname);
                 rawFiles--;
+            alreadyHaveDecompressedFile:;
+                downloaded.Add(myname);
                 compressedFiles++;
+            alreadyHaveFile2:;
                 return;
             }
 

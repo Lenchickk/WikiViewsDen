@@ -50,7 +50,7 @@ namespace WikiPageViewsParser
 
                if (System.IO.File.Exists(to) || DecompressedFileIntheFolder(myname) && !downloaded.Contains(myname)) goto alreadyHaveFile;
 
-                Console.WriteLine("I am " + mynumber.ToString() + " and I am downloading " + myname);
+                //Console.WriteLine("I am " + mynumber.ToString() + " and I am downloading " + myname);
 
 
             trymore:
@@ -70,7 +70,7 @@ namespace WikiPageViewsParser
                 compressedFiles++;
             }
 
-            Console.WriteLine("I am " + mynumber.ToString() + "and I am done.");
+           // Console.WriteLine("I am " + mynumber.ToString() + "and I am done.");
         }
 
         static bool DecompressedFileIntheFolder(String name)
@@ -134,7 +134,7 @@ namespace WikiPageViewsParser
                 rawFiles++;
                 totalcount++;
 
-                Console.WriteLine(totalcount.ToString() + " I am downloading " + myname);
+                //Console.WriteLine(totalcount.ToString() + " I am downloading " + myname);
 
             trymore:
                 try

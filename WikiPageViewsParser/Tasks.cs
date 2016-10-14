@@ -46,8 +46,8 @@ namespace WikiPageViewsParser
                     return;
                 }
 
-                Console.WriteLine(today.ToLongDateString());
-                Console.WriteLine();
+               // Console.WriteLine(today.ToLongDateString());
+                //Console.WriteLine();
                 Parallel.ForEach<string>(
                     thisDay,
                     new ParallelOptions { MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.999) * 1.0)) },
@@ -88,8 +88,15 @@ namespace WikiPageViewsParser
 
         public static void FileKitchen()
         {
-            
-            Common.interestPages = DataTrickery.DataTableToHashSet(WikiDigger.PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
+
+            //from DB
+            //Common.interestPages = DataTrickery.DataTableToHashSet(PostGrePlugIn.getTablePostGre(Common.getPagesSQL));
+            //from file
+            //Common.interestPages = DataTrickery.GetInterestPagesFromFile(Common.ListofPagesFile);
+            //Common.interestPages = DataTrickery.GetInterestPagesFromFile(Common.ListofPagesFile);
+            Common.interestPageAsDict = DataTrickery.GetInterestPagesFromFileToDictionary(Common.ListofPagesFile);
+            System.IO.StreamWriter sw2 = new System.IO.StreamWriter(Common.outputFile_details,false,Encoding.UTF8);
+            sw2.Close();
 
             while (Downloader.downloaded.Count < 1 && DecompressionTrickery.decompressedFiles<1)
             {
@@ -107,8 +114,8 @@ namespace WikiPageViewsParser
             {
                 ;
             }
-
-            DumpParser.DoParsing(s);
+            //DumpParser.DoParsing(s);
+            DumpParser.DoParsingAll(s);
         }
 
         public static void PrepareData()

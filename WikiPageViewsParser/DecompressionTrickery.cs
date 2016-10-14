@@ -29,7 +29,7 @@ namespace WikiPageViewsParser
             String[] helper;
             String[] viewsFiles = System.IO.Directory.GetFiles(Common.pile, "*.gz");
 
-            Console.WriteLine("Unwrapper started" + myNumber);
+            //Console.WriteLine("Unwrapper started" + myNumber);
 
             while (Downloader.compressedFiles>0 || Common.links.Count>0)
         
@@ -90,7 +90,7 @@ namespace WikiPageViewsParser
 
             }
 
-            Console.WriteLine(myNumber+ " unwrapper ended");
+           // Console.WriteLine(myNumber+ " unwrapper ended");
 
         }
 
@@ -100,6 +100,11 @@ namespace WikiPageViewsParser
             System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.StartInfo = procStartInfo;
+            proc.StartInfo.RedirectStandardError = true;
+            proc.StartInfo.RedirectStandardInput = true;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.CreateNoWindow = true;
             proc.Start();
             do {; } while (!proc.HasExited);
         }

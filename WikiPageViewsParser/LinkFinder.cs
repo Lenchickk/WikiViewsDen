@@ -82,7 +82,7 @@ namespace WikiPageViewsParser
                     catch (WebException we)
                     {
                         //throw we;"
-                        Console.WriteLine(we.ToString());
+                       // Console.WriteLine(we.ToString());
 
                     }
                     return html;
